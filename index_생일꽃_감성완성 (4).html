@@ -1,0 +1,3021 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>감성 생일꽃</title>
+  <style>
+    body {
+      font-family: 'Apple SD Gothic Neo', sans-serif;
+      background: #fffef9;
+      color: #333;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #c060a1;
+    }
+    input[type="date"] {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .flower-card {
+      display: none;
+      margin-top: 20px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+    .flower-img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .title {
+      font-size: 1.6em;
+      margin: 10px 0;
+      color: #a0528f;
+    }
+    .subtitle {
+      color: #777;
+      margin-bottom: 10px;
+    }
+    .poem {
+      background: #fff3f8;
+      padding: 12px;
+      border-left: 5px solid #ffaacc;
+      font-style: italic;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎂 나의 생일꽃 찾기</h2>
+  <input type="date" id="birthDate" onchange="showFlower()">
+
+  <div class="flower-card" id="card">
+    <h3 class="title" id="flowerName"></h3>
+    <div class="subtitle" id="zodiac"></div>
+    <img src="" class="flower-img" id="flowerImg">
+    <p><strong>꽃말:</strong> <span id="meaning"></span></p>
+    <p><strong>행운 요소:</strong> <span id="luck"></span></p>
+    <div class="poem" id="poemText"></div>
+  </div>
+
+  <script>
+  const flowerData = {
+  "01-01": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-02": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-03": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-04": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-05": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-06": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-07": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-08": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-09": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-10": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-11": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-12": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-13": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-14": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-15": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-16": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-17": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-18": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-19": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-20": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-21": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-22": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-23": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-24": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-25": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-26": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-27": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-28": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-29": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-30": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "01-31": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-01": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-02": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-03": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-04": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-05": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-06": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-07": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-08": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-09": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-10": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-11": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-12": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-13": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-14": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-15": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-16": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-17": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-18": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-19": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-20": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-21": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-22": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-23": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-24": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-25": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-26": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-27": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "02-28": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-01": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-02": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-03": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-04": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-05": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-06": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-07": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-08": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-09": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-10": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-11": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-12": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-13": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-14": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-15": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-16": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-17": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-18": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-19": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-20": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-21": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-22": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-23": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-24": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-25": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-26": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-27": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-28": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-29": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-30": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "03-31": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-01": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-02": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-03": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-04": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-05": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-06": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-07": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-08": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-09": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-10": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-11": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-12": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-13": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-14": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-15": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-16": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-17": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-18": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-19": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-20": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-21": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-22": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-23": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-24": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-25": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-26": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-27": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-28": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-29": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "04-30": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-01": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-02": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-03": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-04": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-05": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-06": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-07": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-08": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-09": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-10": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-11": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-12": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-13": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-14": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-15": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-16": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-17": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-18": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-19": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-20": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-21": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-22": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-23": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-24": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-25": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-26": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-27": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-28": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-29": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-30": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "05-31": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-01": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-02": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-03": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-04": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-05": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-06": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-07": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-08": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-09": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-10": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-11": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-12": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-13": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-14": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-15": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-16": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-17": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-18": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-19": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-20": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-21": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-22": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-23": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-24": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-25": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-26": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-27": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-28": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-29": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "06-30": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-01": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-02": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-03": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-04": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-05": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-06": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-07": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-08": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-09": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-10": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-11": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-12": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-13": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-14": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-15": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-16": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-17": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-18": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-19": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-20": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-21": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-22": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-23": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-24": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-25": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-26": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-27": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-28": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-29": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-30": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "07-31": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-01": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-02": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-03": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-04": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-05": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-06": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-07": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-08": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-09": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-10": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-11": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-12": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-13": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-14": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-15": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-16": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-17": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-18": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-19": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-20": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-21": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-22": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-23": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-24": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-25": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-26": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-27": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-28": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-29": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-30": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "08-31": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-01": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-02": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-03": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-04": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-05": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-06": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-07": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-08": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-09": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-10": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-11": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-12": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-13": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-14": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-15": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-16": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-17": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-18": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-19": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-20": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-21": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-22": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-23": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-24": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-25": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-26": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-27": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-28": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-29": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "09-30": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-01": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-02": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-03": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-04": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-05": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-06": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-07": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-08": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-09": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-10": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-11": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-12": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-13": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-14": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-15": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-16": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-17": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-18": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-19": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-20": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-21": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-22": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-23": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-24": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-25": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-26": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-27": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-28": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-29": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-30": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "10-31": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-01": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-02": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-03": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-04": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-05": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-06": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-07": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-08": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-09": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-10": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-11": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-12": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-13": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-14": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-15": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-16": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-17": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-18": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-19": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-20": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-21": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-22": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-23": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-24": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-25": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-26": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-27": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-28": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-29": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "11-30": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-01": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-02": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-03": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-04": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-05": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-06": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-07": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-08": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-09": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-10": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-11": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-12": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-13": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-14": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-15": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-16": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-17": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-18": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-19": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-20": {
+    "name": "해바라기",
+    "zodiac": "사자자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg",
+    "meaning": "기다림, 존경",
+    "luck": "색: 노랑 / 숫자: 6 / 행운의 시간: 오후 4시",
+    "poem": "해바라기은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-21": {
+    "name": "코스모스",
+    "zodiac": "처녀자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/1/19/Cosmos_bipinnatus_3.jpg",
+    "meaning": "순수한 마음",
+    "luck": "색: 분홍 / 숫자: 7 / 행운의 시간: 오전 8시",
+    "poem": "코스모스은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-22": {
+    "name": "국화",
+    "zodiac": "천칭자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/5/57/Chrysanthemum_morifolium1.jpg",
+    "meaning": "고결함, 진실",
+    "luck": "색: 하양 / 숫자: 8 / 행운의 시간: 오후 1시",
+    "poem": "국화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-23": {
+    "name": "장미",
+    "zodiac": "전갈자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/32/Red_rose_1.jpg",
+    "meaning": "열정, 사랑",
+    "luck": "색: 빨강 / 숫자: 9 / 행운의 시간: 오후 5시",
+    "poem": "장미은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-24": {
+    "name": "라벤더",
+    "zodiac": "사수자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/41/Lavandula_angustifolia_3.jpg",
+    "meaning": "기억, 평온",
+    "luck": "색: 보라 / 숫자: 10 / 행운의 시간: 오전 7시",
+    "poem": "라벤더은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-25": {
+    "name": "동백꽃",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Camellia_japonica1.jpg",
+    "meaning": "겸손한 아름다움",
+    "luck": "색: 빨강 / 숫자: 11 / 행운의 시간: 밤 10시",
+    "poem": "동백꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-26": {
+    "name": "매화",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Prunus_mume_flower.jpg",
+    "meaning": "희망, 인내",
+    "luck": "색: 하양 / 숫자: 12 / 행운의 시간: 오전 6시",
+    "poem": "매화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-27": {
+    "name": "수선화",
+    "zodiac": "염소자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+    "meaning": "자기애, 새로운 시작",
+    "luck": "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+    "poem": "수선화은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-28": {
+    "name": "프리지아",
+    "zodiac": "물병자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+    "meaning": "순수, 시작의 기쁨",
+    "luck": "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+    "poem": "프리지아은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-29": {
+    "name": "튤립",
+    "zodiac": "물고기자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+    "meaning": "사랑의 고백",
+    "luck": "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+    "poem": "튤립은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-30": {
+    "name": "제비꽃",
+    "zodiac": "양자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+    "meaning": "겸손한 사랑",
+    "luck": "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+    "poem": "제비꽃은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  },
+  "12-31": {
+    "name": "수국",
+    "zodiac": "게자리",
+    "img": "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+    "meaning": "진심, 깊은 감정",
+    "luck": "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+    "poem": "수국은(는) 조용히 피어나<br>당신의 하루를 감싸 안습니다.<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+  }
+};
+
+  function showFlower() {
+    const input = document.getElementById("birthDate").value;
+    if (!input) return;
+    const [year, month, day] = input.split("-");
+    const mmdd = `${month}-${day}`;
+    const data = flowerData[mmdd];
+    const card = document.getElementById("card");
+
+    if (data) {
+      document.getElementById("flowerName").textContent = `${mmdd}의 생일꽃: ${data.name}`;
+      document.getElementById("zodiac").textContent = `별자리: ${data.zodiac}`;
+      document.getElementById("flowerImg").src = data.img;
+      document.getElementById("meaning").textContent = data.meaning;
+      document.getElementById("luck").textContent = data.luck;
+      document.getElementById("poemText").innerHTML = data.poem;
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+      alert("이 날짜의 꽃 정보가 준비되지 않았습니다.");
+    }
+  }
+  </script>
+
+</body>
+</html>
