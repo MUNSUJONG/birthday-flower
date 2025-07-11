@@ -1,55 +1,117 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>생일꽃 찾기</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>감성 생일꽃 찾기</title>
   <style>
-    body { font-family: 'Noto Sans KR', sans-serif; padding: 20px; }
-    input, button { font-size: 16px; margin: 10px; }
-    #result { margin-top: 20px; font-size: 18px; }
+    body {
+      background: #fdf9f5;
+      font-family: 'Pretendard', sans-serif;
+      color: #333;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #d16d79;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #777;
+      margin-bottom: 2rem;
+    }
+
+    input[type="date"] {
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    button {
+      padding: 0.7rem 1.5rem;
+      margin-left: 0.5rem;
+      background-color: #fbb4ae;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: white;
+    }
+
+    button:hover {
+      background-color: #f9848a;
+    }
+
+    #result {
+      margin-top: 2rem;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #result h2 {
+      font-size: 1.8rem;
+      color: #c94c4c;
+    }
+
+    #result blockquote {
+      margin-top: 1rem;
+      font-style: italic;
+      color: #555;
+      border-left: 4px solid #fbb4ae;
+      padding-left: 1rem;
+    }
   </style>
 </head>
 <body>
-  <h2>🌸 생일꽃 찾기</h2>
-  <input type="date" id="birthday">
-  <button onclick="findFlower()">생일꽃 보기</button>
+  <h1>🎂 생일꽃 찾기</h1>
+  <p>생년월일을 입력하면, 당신만의 꽃과 감성 시를 보여드릴게요.</p>
+
+  <input type="date" id="birthdate" />
+  <button onclick="showFlower()">🌸 확인하기</button>
+
   <div id="result"></div>
 
   <script>
-    const flowerData = {
-  "01-01": {
-    "flower": "수선화",
-    "meaning": "자기 사랑",
-    "poem": "차가운 땅 뚫고 핀 너는 / 겨울을 껴안은 첫 고백"
-  },
-  "03-14": {
-    "flower": "제비꽃",
-    "meaning": "겸손한 사랑",
-    "poem": "작은 보랏빛 / 고요 속에 핀 용기"
-  },
-  "07-11": {
-    "flower": "패랭이꽃",
-    "meaning": "용감함",
-    "poem": "불타는 태양 아래 / 흔들림 없는 마음"
-  },
-  "12-25": {
-    "flower": "포인세티아",
-    "meaning": "축복",
-    "poem": "붉은 잎 사이로 / 성탄의 숨결이 흐른다"
-  }
-};
-    function findFlower() {
-      const date = new Date(document.getElementById('birthday').value);
-      const key = ("0" + (date.getMonth()+1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
-      const flower = flowerData[key];
-      const resultDiv = document.getElementById('result');
-      if (flower) {
-        resultDiv.innerHTML = `<strong>${key}의 생일꽃:</strong> ${flower.flower}<br/>
-        <em>꽃말:</em> ${flower.meaning}<br/><br/>
-        <blockquote>${flower.poem}</blockquote>`;
-      } else {
-        resultDiv.innerText = "해당 날짜의 생일꽃 정보가 없습니다.";
+    function getFlowerByDate(dateStr) {
+      const flowers = {
+        "01-01": { flower: "수선화", meaning: "자기애", poem: "차가운 새벽, 스스로 피어난 빛" },
+        "02-14": { flower: "장미", meaning: "사랑", poem: "붉은 입술로 피어난 고백" },
+        "03-01": { flower: "진달래", meaning: "그리움", poem: "이별의 끝, 봄이 묻어나는 계절" },
+        "07-11": { flower: "나팔꽃", meaning: "덧없음", poem: "새벽의 속삭임처럼 짧은 피어남" }
+      };
+
+      const [, month, day] = dateStr.split("-");
+      const key = `${month}-${day}`;
+      return flowers[key] || {
+        flower: "들꽃",
+        meaning: "소박함",
+        poem: "이름 없이 피어도 향기롭다"
+      };
+    }
+
+    function showFlower() {
+      const date = document.getElementById("birthdate").value;
+      if (!date) {
+        alert("생일을 입력해주세요!");
+        return;
       }
+
+      const info = getFlowerByDate(date);
+      document.getElementById("result").innerHTML = `
+        <h2>${info.flower} 🌼</h2>
+        <p><strong>꽃말:</strong> ${info.meaning}</p>
+        <blockquote>${info.poem}</blockquote>
+      `;
     }
   </script>
 </body>
