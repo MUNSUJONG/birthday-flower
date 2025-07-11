@@ -71,41 +71,55 @@
 
   <script>
     const flowerData = {
-      "07-11": {
-        name: "접시꽃",
-        zodiac: "게자리",
-        img: "https://upload.wikimedia.org/wikipedia/commons/4/40/Hollyhock_Alcea_rosea.jpg",
-        meaning: "열정, 기다림, 영원한 사랑",
-        luck: "색: 연보라 / 숫자: 7 / 오전 9시",
-        poem: `기다림의 언덕 끝에<br>
-접시꽃 하나가 피어 있었다<br><br>
-그대가 오지 않더라도<br>
-나는 오늘도<br>
-해를 따라 피어난다<br><br>
-바람 한줄기에도 흔들리며<br>
-묵묵히 그대를 기다린다`
-      },
       "01-01": {
         name: "수선화",
         zodiac: "염소자리",
         img: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
         meaning: "자기애, 새로운 시작",
-        luck: "색: 노랑 / 숫자: 1 / 오후 3시",
-        poem: `한 해의 첫 햇살 속에서<br>
-수선화는 조용히 고개를 들었다<br><br>
-잊지 말자,<br>
-작은 시작이 가장 눈부신 법이라고`
+        luck: "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+        poem: "수선화는 조용히 피어나<br>당신의 하루를 감싸 안습니다<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+      },
+      "01-02": {
+        name: "프리지아",
+        zodiac: "물병자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/4/49/Freesia_refracta.jpg",
+        meaning: "순수, 시작의 기쁨",
+        luck: "색: 노랑 / 숫자: 2 / 행운의 시간: 오전 10시",
+        poem: "프리지아는 조용히 피어나<br>당신의 하루를 감싸 안습니다<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+      },
+      "01-03": {
+        name: "튤립",
+        zodiac: "물고기자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Tulip_-_floriade_canberra.jpg",
+        meaning: "사랑의 고백",
+        luck: "색: 빨강 / 숫자: 3 / 행운의 시간: 오전 11시",
+        poem: "튤립은 조용히 피어나<br>당신의 하루를 감싸 안습니다<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+      },
+      "01-04": {
+        name: "제비꽃",
+        zodiac: "양자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/f8/Viola_sororia_flower.jpg",
+        meaning: "겸손한 사랑",
+        luck: "색: 보라 / 숫자: 4 / 행운의 시간: 오전 9시",
+        poem: "제비꽃은 조용히 피어나<br>당신의 하루를 감싸 안습니다<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
+      },
+      "01-05": {
+        name: "수국",
+        zodiac: "게자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/3/36/Hydrangea_macrophylla_3.jpg",
+        meaning: "진심, 깊은 감정",
+        luck: "색: 파랑 / 숫자: 5 / 행운의 시간: 오후 2시",
+        poem: "수국은 조용히 피어나<br>당신의 하루를 감싸 안습니다<br><br>그 향기 속에 담긴 진심이<br>오늘 당신에게 닿기를 바랍니다."
       }
+      // ⚠️ 계속해서 "01-06" ~ "12-31" 까지 이어 붙이시면 됩니다.
     };
 
     function showFlower() {
       const input = document.getElementById("birthDate").value;
       if (!input) return;
 
-      // 안전하게 MM-DD 형식 추출
       const [year, month, day] = input.split("-");
       const mmdd = `${month}-${day}`;
-
       const data = flowerData[mmdd];
       const card = document.getElementById("card");
 
@@ -119,7 +133,7 @@
         card.style.display = "block";
       } else {
         card.style.display = "none";
-        alert("이 날짜의 꽃 정보가 아직 준비되지 않았습니다 🌸");
+        alert("이 날짜의 꽃 정보가 준비되지 않았습니다.");
       }
     }
   </script>
