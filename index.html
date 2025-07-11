@@ -1,118 +1,144 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>감성 생일꽃 찾기</title>
+  <meta charset="UTF-8">
+  <title>감성 생일꽃 카드</title>
   <style>
     body {
-      background: #fdf9f5;
-      font-family: 'Pretendard', sans-serif;
+      font-family: 'Apple SD Gothic Neo', sans-serif;
+      background-color: #fffefb;
       color: #333;
+      padding: 20px;
+      max-width: 640px;
+      margin: auto;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
+    h2 {
       text-align: center;
-      padding: 2rem;
+      color: #c060a1;
     }
-
-    h1 {
-      font-size: 2.5rem;
-      color: #d16d79;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      color: #777;
-      margin-bottom: 2rem;
-    }
-
     input[type="date"] {
-      padding: 0.7rem 1rem;
-      font-size: 1rem;
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 15px;
+      font-size: 1.1em;
       border: 1px solid #ccc;
       border-radius: 10px;
-      outline: none;
     }
-
-    button {
-      padding: 0.7rem 1.5rem;
-      margin-left: 0.5rem;
-      background-color: #fbb4ae;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      cursor: pointer;
-      color: white;
-    }
-
-    button:hover {
-      background-color: #f9848a;
-    }
-
-    #result {
-      margin-top: 2rem;
+    .flower-card {
+      display: none;
+      border-top: 2px solid #f5d0e3;
+      padding-top: 20px;
+      margin-top: 20px;
       background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      border-radius: 12px;
+      padding: 20px;
     }
-
-    #result h2 {
-      font-size: 1.8rem;
-      color: #c94c4c;
+    .flower-img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 1em;
     }
-
-    #result blockquote {
-      margin-top: 1rem;
+    .title {
+      font-size: 1.8em;
+      color: #a0528f;
+      margin-bottom: 0.3em;
+      text-align: center;
+    }
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 1.5em;
+    }
+    .poem {
       font-style: italic;
-      color: #555;
-      border-left: 4px solid #fbb4ae;
-      padding-left: 1rem;
+      color: #444;
+      background: #fff4f7;
+      padding: 12px 16px;
+      border-left: 5px solid #ffb6c1;
+      border-radius: 8px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>🎂 생일꽃 찾기</h1>
-  <p>생년월일을 입력하면, 당신만의 꽃과 감성 시를 보여드릴게요.</p>
 
-  <input type="date" id="birthdate" />
-  <button onclick="showFlower()">🌸 확인하기</button>
+  <h2>🎂 오늘의 감성 생일꽃</h2>
+  <input type="date" id="birthDate" onchange="showFlower()">
 
-  <div id="result"></div>
+  <div class="flower-card" id="card">
+    <h3 class="title" id="flowerName"></h3>
+    <div class="subtitle" id="zodiac"></div>
+    <img src="" alt="꽃 이미지" class="flower-img" id="flowerImg">
+    <p><strong>꽃말:</strong> <span id="meaning"></span></p>
+    <p><strong>행운 요소:</strong> <span id="luck"></span></p>
+    <div class="poem" id="poemText"></div>
+  </div>
 
   <script>
-    function getFlowerByDate(dateStr) {
-      const flowers = {
-        "01-01": { flower: "수선화", meaning: "자기애", poem: "차가운 새벽, 스스로 피어난 빛" },
-        "02-14": { flower: "장미", meaning: "사랑", poem: "붉은 입술로 피어난 고백" },
-        "03-01": { flower: "진달래", meaning: "그리움", poem: "이별의 끝, 봄이 묻어나는 계절" },
-        "07-11": { flower: "나팔꽃", meaning: "덧없음", poem: "새벽의 속삭임처럼 짧은 피어남" }
-      };
-
-      const [, month, day] = dateStr.split("-");
-      const key = `${month}-${day}`;
-      return flowers[key] || {
-        flower: "들꽃",
-        meaning: "소박함",
-        poem: "이름 없이 피어도 향기롭다"
-      };
-    }
+    // ✨ 샘플 데이터 (전체 365개 중 일부만 예시)
+    const flowerData = {
+      "01-01": {
+        name: "수선화",
+        zodiac: "염소자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Narcissus_February_Gold.jpg",
+        meaning: "자기애, 새로운 시작",
+        luck: "색: 노랑 / 숫자: 1 / 행운의 시간: 오후 3시",
+        poem: `한 해의 첫 햇살 속에서<br>
+수선화는 조용히 고개를 들었다<br><br>
+잊지 말자,<br>
+작은 시작이 가장 눈부신 법이라고`
+      },
+      "07-11": {
+        name: "접시꽃",
+        zodiac: "게자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/4/40/Hollyhock_Alcea_rosea.jpg",
+        meaning: "열정, 기다림, 영원한 사랑",
+        luck: "색: 연보라 / 숫자: 7 / 행운의 시간: 오전 9시",
+        poem: `기다림의 언덕 끝에<br>
+접시꽃 하나가 피어 있었다<br><br>
+그대가 오지 않더라도<br>
+나는 오늘도<br>
+해를 따라 피어난다<br><br>
+바람 한줄기에도 흔들리며<br>
+묵묵히 그대를 기다린다`
+      },
+      "12-25": {
+        name: "포인세티아",
+        zodiac: "염소자리",
+        img: "https://upload.wikimedia.org/wikipedia/commons/f/f2/Poinsettia-Christmas-Flower.jpg",
+        meaning: "축복, 감사, 기쁨",
+        luck: "색: 빨강 / 숫자: 25 / 행운의 시간: 밤 10시",
+        poem: `눈이 내리는 창가에<br>
+포인세티아가 빛나고 있다<br><br>
+당신의 오늘이<br>
+누군가에게 따뜻한 선물처럼<br>
+기억되기를 바랍니다`
+      }
+    };
 
     function showFlower() {
-      const date = document.getElementById("birthdate").value;
-      if (!date) {
-        alert("생일을 입력해주세요!");
-        return;
-      }
+      const input = document.getElementById("birthDate").value;
+      const date = new Date(input);
+      const mmdd = `${String(date.getMonth()+1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      const data = flowerData[mmdd];
+      const card = document.getElementById("card");
 
-      const info = getFlowerByDate(date);
-      document.getElementById("result").innerHTML = `
-        <h2>${info.flower} 🌼</h2>
-        <p><strong>꽃말:</strong> ${info.meaning}</p>
-        <blockquote>${info.poem}</blockquote>
-      `;
+      if (data) {
+        document.getElementById("flowerName").textContent = `${mmdd} 생일꽃: ${data.name}`;
+        document.getElementById("zodiac").textContent = `🌟 별자리: ${data.zodiac}`;
+        document.getElementById("flowerImg").src = data.img;
+        document.getElementById("meaning").textContent = data.meaning;
+        document.getElementById("luck").textContent = data.luck;
+        document.getElementById("poemText").innerHTML = data.poem;
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+        alert("죄송합니다, 이 날짜의 꽃 정보는 아직 준비 중입니다.");
+      }
     }
   </script>
+
 </body>
 </html>
