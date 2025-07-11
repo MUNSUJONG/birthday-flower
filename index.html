@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>생일꽃 찾기</title>
+  <style>
+    body { font-family: 'Noto Sans KR', sans-serif; padding: 20px; }
+    input, button { font-size: 16px; margin: 10px; }
+    #result { margin-top: 20px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h2>🌸 생일꽃 찾기</h2>
+  <input type="date" id="birthday">
+  <button onclick="findFlower()">생일꽃 보기</button>
+  <div id="result"></div>
+
+  <script>
+    const flowerData = {
+  "01-01": {
+    "flower": "수선화",
+    "meaning": "자기 사랑",
+    "poem": "차가운 땅 뚫고 핀 너는 / 겨울을 껴안은 첫 고백"
+  },
+  "03-14": {
+    "flower": "제비꽃",
+    "meaning": "겸손한 사랑",
+    "poem": "작은 보랏빛 / 고요 속에 핀 용기"
+  },
+  "07-11": {
+    "flower": "패랭이꽃",
+    "meaning": "용감함",
+    "poem": "불타는 태양 아래 / 흔들림 없는 마음"
+  },
+  "12-25": {
+    "flower": "포인세티아",
+    "meaning": "축복",
+    "poem": "붉은 잎 사이로 / 성탄의 숨결이 흐른다"
+  }
+};
+    function findFlower() {
+      const date = new Date(document.getElementById('birthday').value);
+      const key = ("0" + (date.getMonth()+1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
+      const flower = flowerData[key];
+      const resultDiv = document.getElementById('result');
+      if (flower) {
+        resultDiv.innerHTML = `<strong>${key}의 생일꽃:</strong> ${flower.flower}<br/>
+        <em>꽃말:</em> ${flower.meaning}<br/><br/>
+        <blockquote>${flower.poem}</blockquote>`;
+      } else {
+        resultDiv.innerText = "해당 날짜의 생일꽃 정보가 없습니다.";
+      }
+    }
+  </script>
+</body>
+</html>
